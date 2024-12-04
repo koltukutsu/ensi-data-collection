@@ -44,11 +44,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
+import { signOut } from 'next-auth/react';
 
 export const company = {
-  name: 'Acme Inc',
+  name: 'Ensi Data Collection',
   logo: GalleryVerticalEnd,
-  plan: 'Enterprise'
+  plan: 'Solace'
 };
 
 export default function AppSidebar() {
@@ -193,20 +194,22 @@ export default function AppSidebar() {
                     <BadgeCheck />
                     Account
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <CreditCard />
                     Billing
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Bell />
                     Notifications
+                  </DropdownMenuItem> */}
+                  <DropdownMenuItem
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                  >
+                    <LogOut />
+                    Log out
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut />
-                  Log out
-                </DropdownMenuItem>
+                {/* <DropdownMenuSeparator /> */}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

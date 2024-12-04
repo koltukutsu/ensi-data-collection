@@ -75,7 +75,7 @@ export const database = {
   getAll: async <T>(collectionName: string): Promise<T[]> => {
     const querySnapshot = await getDocs(collection(db, collectionName));
     return querySnapshot.docs.map(
-      (doc) => ({ ...doc.data(), id: doc.id }) as T
+      (doc) => ({ ...doc.data(), document_id: doc.id }) as T
     );
   },
 
@@ -94,5 +94,22 @@ export const database = {
       );
       callback(data);
     });
+  },
+  getOne: async <T>(
+    collectionName: string,
+    docId: string
+  ): Promise<T | null> => {
+    const docRef = doc(db, collectionName, docId);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? (docSnap.data() as T) : null;
+  },
+
+  takeOneDocumentRandomly: async <T>(
+    collectionName: string
+  ): Promise<T | null> => {
+    const collectionRef = collection(db, collectionName);
+    const snapshot = await getDocs(collectionRef);
+    const randomIndex = Math.floor(Math.random() * snapshot.docs.length);
+    return snapshot.docs[randomIndex].data() as T;
   }
 };

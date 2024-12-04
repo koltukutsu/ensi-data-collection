@@ -4,7 +4,7 @@ import { DataTable } from '@/components/ui/table/data-table';
 import { DataTableFilterBox } from '@/components/ui/table/data-table-filter-box';
 import { DataTableResetFilter } from '@/components/ui/table/data-table-reset-filter';
 import { DataTableSearch } from '@/components/ui/table/data-table-search';
-import { Employee } from '@/constants/data';
+import { Task } from '@/constants/data';
 import { columns } from './columns';
 import {
   GENDER_OPTIONS,
@@ -15,7 +15,7 @@ export default function EmployeeTable({
   data,
   totalData
 }: {
-  data: Employee[];
+  data: Task[];
   totalData: number;
 }) {
   const {

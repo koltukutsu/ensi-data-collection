@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import Providers from '@/components/layout/providers';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toast';
 import type { Metadata } from 'next';
 import { Lato } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';

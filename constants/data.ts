@@ -91,6 +91,14 @@ export const users: User[] = [
   }
 ];
 
+export type Task = {
+  document_id: string;
+  leaf_id: number;
+  leaf_path_list: string[];
+  instruction_prompt: string;
+  created_at: Date;
+};
+
 export type Employee = {
   id: number;
   first_name: string;
@@ -98,16 +106,16 @@ export type Employee = {
   email: string;
   phone: string;
   gender: string;
-  date_of_birth: string; // Consider using a proper date type if possible
+  date_of_birth: string;
   street: string;
   city: string;
   state: string;
   country: string;
   zipcode: string;
-  longitude?: number; // Optional field
-  latitude?: number; // Optional field
+  longitude?: number;
+  latitude?: number;
   job: string;
-  profile_picture?: string | null; // Profile picture can be a string (URL) or null (if no picture)
+  profile_picture?: string | null;
 };
 
 export type Product = {
@@ -123,12 +131,12 @@ export type Product = {
 
 export const navItems: NavItem[] = [
   {
-    title: 'Dashboard',
-    url: '/dashboard/overview',
+    title: 'Panel',
+    url: '/dashboard/panel',
     icon: 'dashboard',
-    isActive: false,
-    shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    isActive: true,
+    shortcut: ['p', 'p'],
+    items: []
   },
   {
     title: 'Assign Tasks',
@@ -136,7 +144,7 @@ export const navItems: NavItem[] = [
     icon: 'task',
     shortcut: ['a', 'a'],
     isActive: false,
-    items: [] // No child items
+    items: []
   },
   {
     title: 'Tasks',
@@ -144,51 +152,6 @@ export const navItems: NavItem[] = [
     icon: 'work',
     shortcut: ['t', 't'],
     isActive: false,
-    items: [] // No child items
+    items: []
   }
-  // {
-  //   title: 'Employee',
-  //   url: '/dashboard/employee',
-  //   icon: 'user',
-  //   shortcut: ['e', 'e'],
-  //   isActive: false,
-  //   items: [] // No child items
-  // },
-  // {
-  //   title: 'Product',
-  //   url: '/dashboard/product',
-  //   icon: 'product',
-  //   shortcut: ['p', 'p'],
-  //   isActive: false,
-  //   items: [] // No child items
-  // },
-  // {
-  //   title: 'Account',
-  //   url: '#', // Placeholder as there is no direct link for the parent
-  //   icon: 'billing',
-  //   isActive: true,
-
-  //   items: [
-  //     {
-  //       title: 'Profile',
-  //       url: '/dashboard/profile',
-  //       icon: 'userPen',
-  //       shortcut: ['m', 'm']
-  //     },
-  //     {
-  //       title: 'Login',
-  //       shortcut: ['l', 'l'],
-  //       url: '/',
-  //       icon: 'login'
-  //     }
-  //   ]
-  // },
-  // {
-  //   title: 'Kanban',
-  //   url: '/dashboard/kanban',
-  //   icon: 'kanban',
-  //   shortcut: ['k', 'k'],
-  //   isActive: false,
-  //   items: [] // No child items
-  // }
 ];
