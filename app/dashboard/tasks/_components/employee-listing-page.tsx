@@ -1,5 +1,5 @@
 import PageContainer from '@/components/layout/page-container';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { Employee } from '@/constants/data';
@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import EmployeeTable from './employee-tables';
+// import TestDatabaseButton from '@/components/ui/test/test-database-button';
 
 type TEmployeeListingPage = {};
 
@@ -39,9 +40,9 @@ export default async function EmployeeListingPage({}: TEmployeeListingPage) {
             title={`Employee (${totalUsers})`}
             description="Manage employees (Server side table functionalities.)"
           />
-
+          {/* <TestDatabaseButton /> */}
           <Link
-            href={'/dashboard/employee/new'}
+            href={'/dashboard/tasks/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New

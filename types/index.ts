@@ -1,4 +1,5 @@
 import { Icons } from '@/components/icons';
+export * from './models/task';
 
 export interface NavItem {
   title: string;
