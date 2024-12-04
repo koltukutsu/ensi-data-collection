@@ -15,6 +15,7 @@ export default function PanelView() {
   const router = useRouter();
   const [dailyActionsCompleted, setDailyActionsCompleted] = useState(0);
   const [dailyActionsTarget, setDailyActionsTarget] = useState(10);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -27,9 +28,11 @@ export default function PanelView() {
           toast.error('Session expired', {
             description: 'Please sign in again'
           });
-          router.push('/');
+          // router.push('/');
           return;
         }
+
+        setUserId(session.user.id);
 
         unsubscribe = await database.subscribe(
           'users',

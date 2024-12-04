@@ -26,7 +26,7 @@ export default function PreviousActionsPage() {
           toast.error('Session expired', {
             description: 'Please sign in again'
           });
-          router.push('/');
+          // router.push('/');
           return;
         }
 

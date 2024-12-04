@@ -59,6 +59,7 @@ export default function ActionPage() {
   const router = useRouter();
   const [dailyActionsCompleted, setDailyActionsCompleted] = React.useState(0);
   const [dailyActionsTarget, setDailyActionsTarget] = React.useState(10);
+  const [userId, setUserId] = React.useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,13 +77,22 @@ export default function ActionPage() {
         const response = await fetch('/api/auth/session');
         const session = await response.json();
         console.log('user session: ', session);
-        if (!session?.user?.id) return;
+        if (!session?.user?.id) {
+          toast.error('Session expired', {
+            description: 'Please sign in again'
+          });
+          // router.push('/');
+          return;
+        }
+
+        setUserId(session.user.id);
 
         unsubscribe = await database.subscribe(
           'users',
           (users: CurrentUser[]) => {
             const user = users[0];
             if (user) {
+              setUserId(user.id);
               setDailyActionsCompleted(user.dailyActionsCompleted || 0);
               setDailyActionsTarget(user.dailyActionsTarget || 10);
             }
@@ -235,16 +245,16 @@ export default function ActionPage() {
       setLoading(true);
 
       // Get current user session
-      const response = await fetch('/api/auth/session');
-      const session = await response.json();
-      if (!session?.user?.id) {
-        toast.error('Session expired', {
-          description: 'Please sign in again'
-        });
-        router.push('/');
-        return;
-      }
-
+      // const response = await fetch('/api/auth/session');
+      // const session = await response.json();
+      // if (!session?.user?.id) {
+      //   toast.error('Session expired', {
+      //     description: 'Please sign in again'
+      //   });
+      //   router.push('/');
+      //   return;
+      // }
+      if (!userId) throw new Error('No user ID found');
       // Prepare the response data
       if (!task) throw new Error('No task found');
 
@@ -252,8 +262,8 @@ export default function ActionPage() {
       let audioFileUrl = null;
       if (audioBlob) {
         const audioFileRef = cloudStorage.generatePath(
-          `audio/${session.user.id}`,
-          `${task.document_id}.webm`
+          `responses/leaf_instruction_prompts`,
+          `${task.document_id}_${userId}_${new Date().getTime()}.webm`
         );
         const audioFile = new File([audioBlob], `${task.document_id}.webm`, {
           type: 'audio/webm'
@@ -270,7 +280,7 @@ export default function ActionPage() {
         leaf_path_list: task.leaf_path_list,
         instruction_prompt: task.instruction_prompt,
         created_at: new Date(),
-        user_id: session.user.id
+        user_id: userId
       };
 
       // Add audio file URL to response data
@@ -283,7 +293,7 @@ export default function ActionPage() {
 
       // Update user's daily actions count
       const newActionsCount = dailyActionsCompleted + 1;
-      await database.update('users', session.user.id, {
+      await database.update('users', userId, {
         dailyActionsCompleted: newActionsCount
       });
 
