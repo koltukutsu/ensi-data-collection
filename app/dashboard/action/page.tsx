@@ -360,7 +360,8 @@ export default function ActionPage() {
             <div className="text-center">
               <h3 className="text-lg font-semibold">Task Not Found</h3>
               <p className="text-sm text-muted-foreground">
-                The task you're looking for doesn't exist or has been removed.
+                The task you&apos;re looking for doesn&apos;t exist or has been
+                removed.
               </p>
             </div>
             <Button variant="outline" asChild>
