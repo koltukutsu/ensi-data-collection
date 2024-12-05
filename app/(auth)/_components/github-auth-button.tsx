@@ -14,8 +14,12 @@ export default function GithubSignInButton() {
       className="w-full"
       variant="outline"
       type="button"
-      onClick={() =>
-        signIn('github', { callbackUrl: callbackUrl ?? '/dashboard' })
+      onClick={
+        () => signIn('github', { callbackUrl: callbackUrl ?? '/dashboard' })
+        // signIn('firebase', {
+        //   provider: 'github',
+        //   callbackUrl: callbackUrl ?? '/dashboard'
+        // })
       }
     >
       <Icons.gitHub className="mr-2 h-4 w-4" />
