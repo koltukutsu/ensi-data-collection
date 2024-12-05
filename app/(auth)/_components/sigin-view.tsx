@@ -45,13 +45,14 @@ export default function SignInViewPage() {
           Ensi Data Collection
         </div>
         <div className="relative z-20 mt-auto">
-          <blockquote className="space-y-2 rounded-lg bg-black/50 p-6">
+          <blockquote className="space-y-2 rounded-lg bg-black/80 p-6">
             <p className="text-lg">
-              &ldquo;This library has saved me countless hours of work and
-              helped me deliver stunning designs to my clients faster than ever
-              before.&rdquo;
+              &ldquo;With every Kokomari, there comes a great responsibility. We
+              are entrusted with the task of collecting data that will be used
+              to improve the lives of millions of people. We must not
+              fail.&rdquo;
             </p>
-            <footer className="text-sm">Sofia Davis</footer>
+            <footer className="text-sm font-bold">Furkan Aga</footer>
           </blockquote>
         </div>
       </div>

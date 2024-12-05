@@ -50,6 +50,17 @@ export default function UserAuthForm() {
 
   return (
     <>
+      <div className="md:hidden">
+        <div className="relative z-20 mt-auto">
+          <blockquote className="space-y-2 rounded-lg bg-gray-200 p-6">
+            <p className="text-lg">
+              &ldquo;With every Kokomari, there comes a great responsibility. We
+              must not fail.&rdquo;
+            </p>
+            <footer className="text-lg font-bold">Furkan Aga</footer>
+          </blockquote>
+        </div>
+      </div>
       {/* <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
