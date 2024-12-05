@@ -67,8 +67,8 @@ export default function PreviousActionsPage() {
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>No Previous Actions</AlertTitle>
             <AlertDescription>
-              You haven't completed any tasks yet. Complete some tasks to see
-              them here.
+              You haven&apos;t completed any tasks yet. Complete some tasks to
+              see them here.
             </AlertDescription>
           </Alert>
         </CardContent>
