@@ -33,7 +33,8 @@ import {
   Home,
   Pen,
   Briefcase,
-  X
+  X,
+  Apple
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -70,6 +71,15 @@ export const Icons = {
   work: Briefcase,
   moon: Moon,
   laptop: Laptop,
+  google: ({ ...props }: LucideProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" {...props}>
+      <path
+        fill="currentColor"
+        d="M255.3 19C112.9 47.6 0 135.4 0 255.3s112.9 207.7 255.3 236.4 255.3-28.7 255.3-236.4S397.7 47.6 255.3 19zm0 472.6c-110.3 0-200-89.7-200-200s89.7-200 200-200 200 89.7 200 200-89.7 200-200 200zm-45.6-208.1h91.2v91.2h-91.2v-91.2zm0-182.4h91.2v91.2h-91.2v-91.2zm0 182.4h91.2v91.2h-91.2v-91.2zm-182.4 0h91.2v91.2h-91.2v-91.2zm182.4 0h91.2v91.2h-91.2v-91.2zm-91.2-182.4h91.2v91.2h-91.2v-91.2zm0 182.4h91.2v91.2h-91.2v-91.2zm-182.4 0h91.2v91.2h-91.2v-91.2zm182.4 0h91.2v91.2h-91.2v-91.2z"
+      />
+    </svg>
+  ),
+  apple: Apple,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
