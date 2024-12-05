@@ -58,12 +58,10 @@ export default function SignInViewPage() {
       </div>
       <div className="flex h-full items-center p-4 lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <div className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Create an account
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              and Sign in with your Github account
+          <div className="flex flex-col space-y-4 text-center">
+            <h1 className="text-3xl font-bold tracking-tight">Welcome Back</h1>
+            <p className="text-base text-muted-foreground">
+              Sign in with your preferred account
             </p>
           </div>
           <UserAuthForm />
