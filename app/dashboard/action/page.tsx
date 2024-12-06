@@ -254,6 +254,7 @@ export default function ActionPage() {
       const userIdNew = createHash('sha256')
         .update(session.user.email! + session.user.name!)
         .digest('hex');
+      console.log('KONTROL USER ID:', userIdNew);
       // Get current user session
       // const response = await fetch('/api/auth/session');
       // const session = await response.json();
