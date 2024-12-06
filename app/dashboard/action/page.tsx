@@ -32,6 +32,7 @@ import { FileX, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Spinner } from '@/components/ui/spinner';
 import { ResponseData } from '@/types/models/response_data';
+import { createHash } from 'crypto';
 
 const formSchema = z.object({
   response: z.string().min(1, {
@@ -84,20 +85,23 @@ export default function ActionPage() {
           // router.push('/');
           return;
         }
+        const id = createHash('sha256')
+          .update(session.user.email! + session.user.name!)
+          .digest('hex');
 
-        setUserId(session.user.id);
+        setUserId(id);
 
         unsubscribe = await database.subscribe(
           'users',
           (users: CurrentUser[]) => {
             const user = users[0];
             if (user) {
-              setUserId(user.id);
+              setUserId(id);
               setDailyActionsCompleted(user.dailyActionsCompleted || 0);
               setDailyActionsTarget(user.dailyActionsTarget || 10);
             }
           },
-          where('id', '==', session.user.id)
+          where('id', '==', id)
         );
       } catch (error) {
         console.error('Error fetching session:', error);

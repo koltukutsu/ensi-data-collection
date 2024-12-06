@@ -10,6 +10,7 @@ import { auth } from '@/auth';
 import { where } from 'firebase/firestore';
 import { CurrentUser } from '@/types/models/user';
 import { toast } from 'sonner';
+import { createHash } from 'crypto';
 
 export default function PanelView() {
   const router = useRouter();
@@ -31,8 +32,11 @@ export default function PanelView() {
           // router.push('/');
           return;
         }
+        const id = createHash('sha256')
+          .update(session.user.email! + session.user.name!)
+          .digest('hex');
 
-        setUserId(session.user.id);
+        setUserId(id);
 
         unsubscribe = await database.subscribe(
           'users',
@@ -43,7 +47,7 @@ export default function PanelView() {
               setDailyActionsTarget(user.dailyActionsTarget || 10);
             }
           },
-          where('id', '==', session.user.id)
+          where('id', '==', id)
         );
       } catch (error) {
         console.error('Error fetching session:', error);
