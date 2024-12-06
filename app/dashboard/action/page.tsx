@@ -33,6 +33,7 @@ import Link from 'next/link';
 import { Spinner } from '@/components/ui/spinner';
 import { ResponseData } from '@/types/models/response_data';
 import { createHash } from 'crypto';
+import { useSession } from 'next-auth/react';
 
 const formSchema = z.object({
   response: z.string().min(1, {
@@ -247,7 +248,12 @@ export default function ActionPage() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
+      const response = await fetch('/api/auth/session');
+      const session = await response.json();
 
+      const userIdNew = createHash('sha256')
+        .update(session.user.email! + session.user.name!)
+        .digest('hex');
       // Get current user session
       // const response = await fetch('/api/auth/session');
       // const session = await response.json();
@@ -258,7 +264,7 @@ export default function ActionPage() {
       //   router.push('/');
       //   return;
       // }
-      if (!userId) throw new Error('No user ID found');
+      if (!userIdNew) throw new Error('No user ID found');
       // Prepare the response data
       if (!task) throw new Error('No task found');
 
@@ -267,7 +273,7 @@ export default function ActionPage() {
       if (audioBlob) {
         const audioFileRef = cloudStorage.generatePath(
           `responses/leaf_instruction_prompts`,
-          `${task.document_id}_${userId}_${new Date().getTime()}.webm`
+          `${task.document_id}_${userIdNew}_${new Date().getTime()}.webm`
         );
         const audioFile = new File([audioBlob], `${task.document_id}.webm`, {
           type: 'audio/webm'
@@ -284,7 +290,7 @@ export default function ActionPage() {
         leaf_path_list: task.leaf_path_list,
         instruction_prompt: task.instruction_prompt,
         created_at: new Date(),
-        user_id: userId
+        user_id: userIdNew
       };
 
       // Add audio file URL to response data
@@ -297,7 +303,7 @@ export default function ActionPage() {
 
       // Update user's daily actions count
       const newActionsCount = dailyActionsCompleted + 1;
-      await database.update('users', userId, {
+      await database.update('users', userIdNew, {
         dailyActionsCompleted: newActionsCount
       });
 
