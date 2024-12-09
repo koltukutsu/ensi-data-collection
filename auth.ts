@@ -14,7 +14,7 @@ export const { auth, handlers, signOut, signIn } = NextAuth({
         const id = createHash('sha256')
           .update(user.email! + user.name!)
           .digest('hex');
-
+        console.log('id given', id);
         const existingUser = await database.getOne('users', id);
 
         if (!existingUser) {
@@ -29,7 +29,7 @@ export const { auth, handlers, signOut, signIn } = NextAuth({
             dailyActionsCompleted: 0,
             dailyActionsTarget: 10
           };
-          await database.create('users', newUser);
+          await database.createWithId('users', id, newUser);
         }
       } catch (error) {
         console.error('Error handling user sign in:', error);

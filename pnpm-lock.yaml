@@ -118,6 +118,9 @@ importers:
       cmdk:
         specifier: ^1.0.0
         version: 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
@@ -130,6 +133,9 @@ importers:
       firebase:
         specifier: ^11.0.2
         version: 11.0.2
+      formidable:
+        specifier: ^3.5.2
+        version: 3.5.2
       kbar:
         specifier: ^0.1.0-beta.45
         version: 0.1.0-beta.45(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3110,6 +3116,12 @@ packages:
       }
     engines: { node: '>= 0.4' }
 
+  asap@2.0.6:
+    resolution:
+      {
+        integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==
+      }
+
   ast-types-flow@0.0.8:
     resolution:
       {
@@ -3562,6 +3574,13 @@ packages:
       }
     engines: { node: '>= 0.6' }
 
+  cors@2.8.5:
+    resolution:
+      {
+        integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==
+      }
+    engines: { node: '>= 0.10' }
+
   create-jest@29.7.0:
     resolution:
       {
@@ -3852,6 +3871,12 @@ packages:
     resolution:
       {
         integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==
+      }
+
+  dezalgo@1.0.4:
+    resolution:
+      {
+        integrity: sha512-rXSP0bf+5n0Qonsb+SVVfNfIsimO4HEtmnIpPHY8Q1UCzKlQrDMfdobr8nJOOsRgWCyMRqeSBQzmWUMq7zvVig==
       }
 
   didyoumean@1.2.2:
@@ -4450,6 +4475,12 @@ packages:
       }
     engines: { node: '>= 12.20' }
 
+  formidable@3.5.2:
+    resolution:
+      {
+        integrity: sha512-Jqc1btCy3QzRbJaICGwKcBfGWuLADRerLzDqi2NwSt/UkXLsHJw2TVResiaoBufHVHy9aSgClOHCeJsSsFLTbg==
+      }
+
   fraction.js@4.3.7:
     resolution:
       {
@@ -4727,6 +4758,13 @@ packages:
         integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==
       }
     engines: { node: '>= 0.4' }
+
+  hexoid@2.0.0:
+    resolution:
+      {
+        integrity: sha512-qlspKUK7IlSQv2o+5I7yhUd7TxlOG2Vr5LTa3ve2XSNVKAL/n/u/7KLvKmFNimomDIKvZFXWHv0T12mv7rT8Aw==
+      }
+    engines: { node: '>=8' }
 
   html-encoding-sniffer@3.0.0:
     resolution:
@@ -7668,6 +7706,13 @@ packages:
       }
     engines: { node: '>=10.12.0' }
 
+  vary@1.1.2:
+    resolution:
+      {
+        integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
+      }
+    engines: { node: '>= 0.8' }
+
   victory-vendor@36.9.2:
     resolution:
       {
@@ -10104,6 +10149,8 @@ snapshots:
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
 
+  asap@2.0.6: {}
+
   ast-types-flow@0.0.8: {}
 
   asynckit@0.4.0: {}
@@ -10385,6 +10432,11 @@ snapshots:
 
   cookie@0.7.1: {}
 
+  cors@2.8.5:
+    dependencies:
+      object-assign: 4.1.1
+      vary: 1.1.2
+
   create-jest@29.7.0(@types/node@20.5.7):
     dependencies:
       '@jest/types': 29.6.3
@@ -10533,6 +10585,11 @@ snapshots:
   detect-newline@3.1.0: {}
 
   detect-node-es@1.1.0: {}
+
+  dezalgo@1.0.4:
+    dependencies:
+      asap: 2.0.6
+      wrappy: 1.0.2
 
   didyoumean@1.2.2: {}
 
@@ -11060,6 +11117,12 @@ snapshots:
       node-domexception: 1.0.0
       web-streams-polyfill: 4.0.0-beta.3
 
+  formidable@3.5.2:
+    dependencies:
+      dezalgo: 1.0.4
+      hexoid: 2.0.0
+      once: 1.4.0
+
   fraction.js@4.3.7: {}
 
   fs-constants@1.0.0: {}
@@ -11217,6 +11280,8 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  hexoid@2.0.0: {}
 
   html-encoding-sniffer@3.0.0:
     dependencies:
@@ -13167,6 +13232,8 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
+
+  vary@1.1.2: {}
 
   victory-vendor@36.9.2:
     dependencies:

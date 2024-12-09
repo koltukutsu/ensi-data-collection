@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: 'api.slingacademy.com',
         port: ''
       }
+    ],
+    domains: [
+      'firebasestorage.googleapis.com',
+      'storage.googleapis.com',
+      'localhost'
     ]
   },
   transpilePackages: ['geist']

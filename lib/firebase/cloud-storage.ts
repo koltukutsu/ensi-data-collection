@@ -16,6 +16,8 @@ export const cloudStorage = {
     path: string,
     file: File
   ): Promise<{ url: string; path: string }> => {
+    // Create nested directories by using the full path
+    // Firebase Storage automatically handles nested paths
     const storageRef = ref(storage, path);
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);

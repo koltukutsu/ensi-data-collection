@@ -21,12 +21,32 @@ const db = getFirestore(app);
 
 export const database = {
   // Create a new document
+
   create: async <T extends object>(
     collectionName: string,
     data: T & { id?: string }
   ): Promise<T & { id: string }> => {
-    const docRef = doc(collection(db, collectionName));
+    // Create collection if it doesn't exist
+    const collectionRef = collection(db, collectionName);
+
+    // Create new document in collection
+    const docRef = doc(collectionRef);
     const docData = { ...data, id: docRef.id };
+    await setDoc(docRef, docData);
+    return docData;
+  },
+  // Create a document with a specific ID
+  createWithId: async <T extends object>(
+    collectionName: string,
+    docId: string,
+    data: T
+  ): Promise<T & { id: string }> => {
+    // Create collection if it doesn't exist
+    const collectionRef = collection(db, collectionName);
+
+    // Create new document with specified ID
+    const docRef = doc(collectionRef, docId);
+    const docData = { ...data, id: docId };
     await setDoc(docRef, docData);
     return docData;
   },
@@ -110,6 +130,9 @@ export const database = {
     const collectionRef = collection(db, collectionName);
     const snapshot = await getDocs(collectionRef);
     const randomIndex = Math.floor(Math.random() * snapshot.docs.length);
-    return snapshot.docs[randomIndex].data() as T;
+    return {
+      ...(snapshot.docs[randomIndex].data() as T),
+      id: snapshot.docs[randomIndex].id
+    };
   }
 };

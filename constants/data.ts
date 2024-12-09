@@ -92,6 +92,7 @@ export const users: User[] = [
 ];
 
 export type Task = {
+  id: string;
   document_id: string;
   leaf_id: number;
   leaf_path_list: string[];

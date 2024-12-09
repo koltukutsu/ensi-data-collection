@@ -159,6 +159,9 @@ export default function ActionPage() {
         const randomTask = await database.takeOneDocumentRandomly<Task>(
           'sources/leaf_instruction_prompts/prompts'
         );
+        // get its document id
+        const documentId = randomTask?.id;
+        console.log('documentId', documentId);
         setTask(randomTask);
       } catch (err) {
         console.error('Failed to fetch random task:', err);
@@ -274,9 +277,9 @@ export default function ActionPage() {
       if (audioBlob) {
         const audioFileRef = cloudStorage.generatePath(
           `responses/leaf_instruction_prompts`,
-          `${task.document_id}_${userIdNew}_${new Date().getTime()}.webm`
+          `${task.id}_${userIdNew}_${new Date().getTime()}.webm`
         );
-        const audioFile = new File([audioBlob], `${task.document_id}.webm`, {
+        const audioFile = new File([audioBlob], `${task.id}.webm`, {
           type: 'audio/webm'
         });
         await cloudStorage.upload(audioFileRef, audioFile);
@@ -286,7 +289,7 @@ export default function ActionPage() {
       const responseData: ResponseData = {
         audio_file_url: undefined,
         response_text: data.response,
-        task_doc_id: task.document_id,
+        task_doc_id: task.id,
         leaf_id: task.leaf_id,
         leaf_path_list: task.leaf_path_list,
         instruction_prompt: task.instruction_prompt,
@@ -299,14 +302,24 @@ export default function ActionPage() {
         responseData.audio_file_url = audioFileUrl;
       }
 
+      console.log('responseData', responseData);
+
       // Submit the response data to Firebase
-      await database.create('responses/leaf_instruction_prompts', responseData);
+      // Create collection first if it doesn't exist
+      const collectionPath = `saved/responses/leaf_instruction_prompts`;
+      console.log('Creating response in collection:', collectionPath);
+      console.log('Response data:', responseData);
+      await database.create(collectionPath, responseData);
+      console.log('Response created successfully');
 
       // Update user's daily actions count
       const newActionsCount = dailyActionsCompleted + 1;
+      console.log('Updating daily actions count for user:', userIdNew);
+      console.log('New actions count:', newActionsCount);
       await database.update('users', userIdNew, {
         dailyActionsCompleted: newActionsCount
       });
+      console.log('Daily actions count updated successfully');
 
       // Show success toast
       toast.success('Instruction submitted successfully!', {
