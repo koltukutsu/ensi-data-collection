@@ -38,3 +38,5 @@ export const { auth, handlers, signOut, signIn } = NextAuth({
     }
   }
 });
+
+// https://datacollection.solace.com.tr/api/auth/callback/github

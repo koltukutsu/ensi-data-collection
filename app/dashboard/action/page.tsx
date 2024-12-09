@@ -76,33 +76,33 @@ export default function ActionPage() {
 
     const setupUserSubscription = async () => {
       try {
+        console.log('setupUserSubscription action page');
         const response = await fetch('/api/auth/session');
         const session = await response.json();
-        console.log('user session: ', session);
-        if (!session?.user?.id) {
+        console.log('Setup user subscription - session: ', session);
+        const userId = createHash('sha256')
+          .update(session.user.email! + session.user.name!)
+          .digest('hex');
+        if (!userId) {
           toast.error('Session expired', {
             description: 'Please sign in again'
           });
           // router.push('/');
           return;
         }
-        const id = createHash('sha256')
-          .update(session.user.email! + session.user.name!)
-          .digest('hex');
-
-        setUserId(id);
+        setUserId(userId);
 
         unsubscribe = await database.subscribe(
           'users',
           (users: CurrentUser[]) => {
             const user = users[0];
             if (user) {
-              setUserId(id);
+              setUserId(userId);
               setDailyActionsCompleted(user.dailyActionsCompleted || 0);
               setDailyActionsTarget(user.dailyActionsTarget || 10);
             }
           },
-          where('id', '==', id)
+          where('id', '==', userId)
         );
       } catch (error) {
         console.error('Error fetching session:', error);
@@ -411,7 +411,7 @@ export default function ActionPage() {
       </CardHeader>
       <Separator />
 
-      <CardContent className="flex h-[calc(100%-8rem)] flex-col p-0">
+      <CardContent className="flex h-[calc(100%-8rem)] flex-col overflow-auto p-0">
         <ScrollArea className="flex-1 px-4 sm:px-6">
           <div className="space-y-6 py-4">
             {/* Task Prompt Section */}
@@ -458,7 +458,32 @@ export default function ActionPage() {
                   name="response"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">Your Response</FormLabel>
+                      <div className="flex items-center justify-between">
+                        <FormLabel className="text-base">
+                          Your Response
+                        </FormLabel>
+                        <Button
+                          type="button"
+                          variant={
+                            isRecording ? 'destructive' : 'default-tinted'
+                          }
+                          onClick={isRecording ? stopRecording : startRecording}
+                          disabled={isTranscribing}
+                          className="ml-2"
+                        >
+                          {isRecording ? (
+                            <>
+                              <Square className="mr-2 h-4 w-4" />
+                              Stop ({recordingDuration}s)
+                            </>
+                          ) : (
+                            <>
+                              <Mic className="mr-2 h-4 w-4" />
+                              Record Voice
+                            </>
+                          )}
+                        </Button>
+                      </div>
                       <div className="space-y-4">
                         <FormControl>
                           <div className="relative">
@@ -490,30 +515,6 @@ export default function ActionPage() {
                         <div className="space-y-4">
                           <div className="w-full rounded-lg border p-2">
                             <div className="flex flex-col items-center gap-4 sm:flex-row">
-                              <Button
-                                type="button"
-                                variant={
-                                  isRecording ? 'destructive' : 'default-tinted'
-                                }
-                                onClick={
-                                  isRecording ? stopRecording : startRecording
-                                }
-                                disabled={isTranscribing}
-                                className="w-full sm:w-auto"
-                              >
-                                {isRecording ? (
-                                  <>
-                                    <Square className="mr-2 h-4 w-4" />
-                                    Stop ({recordingDuration}s)
-                                  </>
-                                ) : (
-                                  <>
-                                    <Mic className="mr-2 h-4 w-4" />
-                                    Record Voice
-                                  </>
-                                )}
-                              </Button>
-
                               {audioUrl && !isTranscribing && (
                                 <Button
                                   type="button"
@@ -602,8 +603,8 @@ export default function ActionPage() {
         </ScrollArea>
 
         {/* Fixed Submit Button Section */}
-        <div className="sticky bottom-0 mt-auto border-t bg-background p-4 sm:p-6">
-          <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
+          <div className="sticky bottom-0 mt-auto border-t bg-background pb-16 sm:p-6">
             {!form.getValues('response') && (
               <p className="text-center text-xs text-muted-foreground">
                 Please provide a response by recording your voice or typing
@@ -611,12 +612,10 @@ export default function ActionPage() {
             )}
             <Button
               onClick={form.handleSubmit(onSubmit)}
-              disabled={!form.getValues('response')?.trim() || isTranscribing}
+              disabled={isTranscribing}
               className="w-full"
               size="lg"
-              variant={
-                form.getValues('response')?.trim() ? 'default' : 'secondary'
-              }
+              variant="default"
             >
               {isTranscribing ? (
                 <>

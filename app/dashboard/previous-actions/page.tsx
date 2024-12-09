@@ -11,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 import router from 'next/router';
+import { createHash } from 'crypto';
 
 export default function PreviousActionsPage() {
   const [previousTasks, setPreviousTasks] = React.useState<Task[]>([]);
@@ -19,10 +20,15 @@ export default function PreviousActionsPage() {
   React.useEffect(() => {
     const fetchPreviousTasks = async () => {
       try {
+        console.log('fetchPreviousTasks');
         const response = await fetch('/api/auth/session');
         const session = await response.json();
-        console.log('user session: ', session);
-        if (!session?.user?.id) {
+        console.log('fetchPreviousTasks - user session: ', session);
+        const userId = createHash('sha256')
+          .update(session.user.email! + session.user.name!)
+          .digest('hex');
+        console.log('fetchPreviousTasks - userId: ', userId);
+        if (!userId) {
           toast.error('Session expired', {
             description: 'Please sign in again'
           });

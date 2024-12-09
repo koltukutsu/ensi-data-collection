@@ -23,20 +23,23 @@ export default function PanelView() {
 
     const setupUserSubscription = async () => {
       try {
+        console.log('setupUserSubscription');
         const response = await fetch('/api/auth/session');
         const session = await response.json();
-        if (!session?.user?.id) {
+        console.log('Setup user subscription - session: ', session);
+        const userId = createHash('sha256')
+          .update(session.user.email! + session.user.name!)
+          .digest('hex');
+        console.log('Setup user subscription - userId: ', userId);
+        if (!userId) {
           toast.error('Session expired', {
             description: 'Please sign in again'
           });
           // router.push('/');
           return;
         }
-        const id = createHash('sha256')
-          .update(session.user.email! + session.user.name!)
-          .digest('hex');
 
-        setUserId(id);
+        setUserId(userId);
 
         unsubscribe = await database.subscribe(
           'users',
@@ -47,7 +50,7 @@ export default function PanelView() {
               setDailyActionsTarget(user.dailyActionsTarget || 10);
             }
           },
-          where('id', '==', id)
+          where('id', '==', userId)
         );
       } catch (error) {
         console.error('Error fetching session:', error);
