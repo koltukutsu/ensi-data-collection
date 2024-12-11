@@ -22,6 +22,9 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@18.3.1)
+      '@firebasegen/default-connector':
+        specifier: file:dataconnect-generated/js/default-connector
+        version: file:dataconnect-generated/js/default-connector(firebase@11.0.2)
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.9.1(react-hook-form@7.53.2(react@18.3.1))
@@ -1036,6 +1039,13 @@ packages:
       {
         integrity: sha512-2xCRM9q9FlzGZCdgDMJwc0gyUkWFtkosy7Xxr6sFgQwn+wMNIWd7xIvYNauU1r64B5L5rsGKy/n9TKJ0aAFeqQ==
       }
+
+  '@firebasegen/default-connector@file:dataconnect-generated/js/default-connector':
+    resolution:
+      { directory: dataconnect-generated/js/default-connector, type: directory }
+    engines: { node: ' >=18.0' }
+    peerDependencies:
+      firebase: ^10.14.0 || ^11.0.0
 
   '@floating-ui/core@1.6.8':
     resolution:
@@ -8620,6 +8630,10 @@ snapshots:
       tslib: 2.8.1
 
   '@firebase/webchannel-wrapper@1.0.3': {}
+
+  '@firebasegen/default-connector@file:dataconnect-generated/js/default-connector(firebase@11.0.2)':
+    dependencies:
+      firebase: 11.0.2
 
   '@floating-ui/core@1.6.8':
     dependencies:

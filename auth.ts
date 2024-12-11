@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import authConfig from './auth.config';
-import { database } from '@/lib/firebase/database';
+import { database } from '@/lib/firebase/data-collection/database';
 import { CurrentUser } from './types/models/user';
 import { createHash } from 'crypto';
 
@@ -21,6 +21,7 @@ export const { auth, handlers, signOut, signIn } = NextAuth({
           // Create new user if doesn't exist
           const newUser: CurrentUser = {
             id: id,
+            admin: false,
             name: user.name,
             email: user.email,
             image: user.image,

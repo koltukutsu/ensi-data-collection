@@ -4,19 +4,35 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useRouter } from 'next/navigation';
-import { database } from '@/lib/firebase/database';
+import { database } from '@/lib/firebase/data-collection/database';
 import { useEffect, useState } from 'react';
 import { auth } from '@/auth';
+import { database as ensiHomeDb } from '@/lib/firebase/ensi-home/database';
 import { where } from 'firebase/firestore';
 import { CurrentUser } from '@/types/models/user';
 import { toast } from 'sonner';
 import { createHash } from 'crypto';
+
+interface WakeDetection {
+  document_id: string;
+  channels: number;
+  filename: string;
+  sample_rate: number;
+  sample_width: number;
+  source: string;
+  storage_path: string;
+  timestamp: string;
+  wake_word: string;
+  wake_word_id: string;
+  labeled?: boolean;
+}
 
 export default function PanelView() {
   const router = useRouter();
   const [dailyActionsCompleted, setDailyActionsCompleted] = useState(0);
   const [dailyActionsTarget, setDailyActionsTarget] = useState(10);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -66,6 +82,36 @@ export default function PanelView() {
     };
   }, []);
 
+  // const handleUpdateLabeled = async () => {
+  //   setIsUpdating(true);
+  //   try {
+  //     const docs = await ensiHomeDb.getAll<WakeDetection>('wake_detections');
+  //     console.log('wake detections docs: ', docs);
+  //     const updatePromises = docs.map((doc) => {
+  //       console.log('update wake detection labeled: ', doc.document_id);
+  //       return ensiHomeDb.set('wake_detections_labeled', doc.document_id, {
+  //         channels: doc.channels,
+  //         filename: doc.filename,
+  //         sample_rate: doc.sample_rate,
+  //         sample_width: doc.sample_width,
+  //         source: doc.source,
+  //         storage_path: doc.storage_path,
+  //         timestamp: doc.timestamp,
+  //         wake_word: doc.wake_word,
+  //         wake_word_id: doc.wake_word_id,
+  //         labeled: false
+  //       });
+  //     });
+  //     await Promise.all(updatePromises);
+  //     toast.success('Successfully updated all documents as unlabeled');
+  //   } catch (error) {
+  //     console.error('Error updating documents:', error);
+  //     toast.error('Failed to update documents');
+  //   } finally {
+  //     setIsUpdating(false);
+  //   }
+  // };
+
   if (!router) return null;
 
   const remainingActions = dailyActionsTarget - dailyActionsCompleted;
@@ -98,6 +144,15 @@ export default function PanelView() {
       >
         Start
       </Button>
+      {/* <Button
+        variant="outline"
+        size="lg"
+        className="h-12 w-full max-w-[90vw] sm:w-64"
+        onClick={handleUpdateLabeled}
+        disabled={isUpdating}
+      >
+        {isUpdating ? 'Updating...' : 'Mark All as Unlabeled'}
+      </Button> */}
     </div>
   );
 }

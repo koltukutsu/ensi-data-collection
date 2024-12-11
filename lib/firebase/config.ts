@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 
 const firebaseConfig = {
@@ -11,10 +11,29 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-export const app =
-  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const firebaseConfigForEnsiHome = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_ENSI_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_ENSI_AUTH_DOMAIN,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_ENSI_DATABASE_URL,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_ENSI_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_ENSI_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_ENSI_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_ENSI_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_ENSI_MEASUREMENT_ID
+};
+
+// Initialize Firebase apps with unique names
+export const appDataCollection = initializeApp(
+  firebaseConfig,
+  'data-collection'
+);
+export const appEnsiHome = initializeApp(
+  firebaseConfigForEnsiHome,
+  'ensi-home'
+);
 
 // Initialize Analytics (only in browser environment)
 export const analytics =
-  typeof window !== 'undefined' ? getAnalytics(app) : null;
+  typeof window !== 'undefined' ? getAnalytics(appDataCollection) : null;
+export const analyticsEnsiHome =
+  typeof window !== 'undefined' ? getAnalytics(appEnsiHome) : null;

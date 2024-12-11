@@ -15,8 +15,8 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Mic, Square, Send, Play, Pause, Loader2, X } from 'lucide-react';
-import { database } from '@/lib/firebase/database';
-import { cloudStorage } from '@/lib/firebase/cloud-storage';
+import { database } from '@/lib/firebase/data-collection/database';
+import { cloudStorage } from '@/lib/firebase/data-collection/cloud-storage';
 import { Task } from '@/constants/data';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';

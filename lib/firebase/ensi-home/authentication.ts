@@ -7,9 +7,9 @@ import {
   onAuthStateChanged as _onAuthStateChanged,
   User
 } from 'firebase/auth';
-import { app } from './config';
+import { appEnsiHome } from '../config';
 
-export const auth = getAuth(app);
+export const auth = getAuth(appEnsiHome);
 
 const githubProvider = new GithubAuthProvider();
 const googleProvider = new GoogleAuthProvider();

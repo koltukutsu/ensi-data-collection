@@ -5,10 +5,10 @@ import {
   getDownloadURL,
   deleteObject
 } from 'firebase/storage';
-import { app } from './config';
+import { appEnsiHome } from '../config';
 
-// Initialize Storage
-const storage = getStorage(app);
+// Initialize Storage specifically for ensi-home
+const storage = getStorage(appEnsiHome);
 
 export const cloudStorage = {
   // Upload a file

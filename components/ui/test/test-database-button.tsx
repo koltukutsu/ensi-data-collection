@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 export default function TestDatabaseButton() {
   async function createTestEmployee() {
     try {
-      const db = await import('@/lib/firebase/database');
+      const db = await import('@/lib/firebase/data-collection/database');
       await db.database.create('employees', {
         name: 'Test Employee',
         email: 'test@example.com',

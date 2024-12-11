@@ -1,4 +1,4 @@
-import { cloudStorage } from '../cloud-storage';
+import { cloudStorage } from '../data-collection/cloud-storage';
 
 describe('Cloud Storage', () => {
   const testFile = new File(['test content'], 'test.txt', {

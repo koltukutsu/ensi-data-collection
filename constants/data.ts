@@ -140,19 +140,28 @@ export const navItems: NavItem[] = [
     items: []
   },
   {
-    title: 'Assign Tasks',
-    url: '/dashboard/assign-tasks',
-    icon: 'task',
-    shortcut: ['a', 'a'],
-    isActive: false,
-    items: []
-  },
-  {
-    title: 'Tasks',
-    url: '/dashboard/tasks',
-    icon: 'work',
-    shortcut: ['t', 't'],
-    isActive: false,
+    title: 'Wake Word Review',
+    url: '/dashboard/wake-word',
+    icon: 'dashboard',
+    isActive: true,
+    shortcut: ['w', 'w'],
     items: []
   }
+
+  // {
+  //   title: 'Assign Tasks',
+  //   url: '/dashboard/assign-tasks',
+  //   icon: 'task',
+  //   shortcut: ['a', 'a'],
+  //   isActive: false,
+  //   items: []
+  // },
+  // {
+  //   title: 'Tasks',
+  //   url: '/dashboard/tasks',
+  //   icon: 'work',
+  //   shortcut: ['t', 't'],
+  //   isActive: false,
+  //   items: []
+  // }
 ];

@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { database } from '@/lib/firebase/database';
+import { database } from '@/lib/firebase/data-collection/database';
 import { Task } from '@/constants/data';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

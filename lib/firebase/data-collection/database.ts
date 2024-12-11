@@ -14,10 +14,10 @@ import {
   DocumentData,
   QueryConstraint
 } from 'firebase/firestore';
-import { app } from './config';
+import { appDataCollection } from '../config';
 
-// Initialize Firestore
-const db = getFirestore(app);
+// Initialize Firestore specifically for data-collection
+const db = getFirestore(appDataCollection);
 
 export const database = {
   // Create a new document

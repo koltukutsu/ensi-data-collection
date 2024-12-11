@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
-import { signInWithApple } from '@/lib/firebase/authentication';
+import { signInWithApple } from '@/lib/firebase/data-collection/authentication';
 import { toast } from 'sonner';
 
 export default function AppleSignInButton() {

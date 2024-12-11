@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import EmployeeTable from './employee-tables';
-import { database } from '@/lib/firebase/database';
+import { database } from '@/lib/firebase/data-collection/database';
 
 type TTaskListingPage = {};
 
