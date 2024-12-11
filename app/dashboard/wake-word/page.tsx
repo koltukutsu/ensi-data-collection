@@ -250,15 +250,17 @@ export default function WakeWordReviewPage() {
           <div className="grid grid-cols-3 gap-4 rounded-lg bg-muted p-4">
             <div className="text-center">
               <p className="text-sm text-muted-foreground">Remaining</p>
-              <p className="text-xl font-bold">{remainingCount}</p>
+              <p className="text-xl font-bold text-yellow-600">
+                {remainingCount}
+              </p>
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground">Allowed</p>
-              <p className="text-xl font-bold">{allowedCount}</p>
+              <p className="text-xl font-bold text-green-600">{allowedCount}</p>
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground">Rejected</p>
-              <p className="text-xl font-bold">{rejectedCount}</p>
+              <p className="text-xl font-bold text-red-600">{rejectedCount}</p>
             </div>
           </div>
 
