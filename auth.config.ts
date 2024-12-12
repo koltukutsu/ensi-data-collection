@@ -10,8 +10,8 @@ const authConfig = {
       clientSecret: process.env.GITHUB_SECRET ?? ''
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID ?? '',
-      clientSecret: process.env.GOOGLE_SECRET ?? ''
+      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ''
     }),
     AppleProvider({
       clientId: process.env.APPLE_ID ?? '',

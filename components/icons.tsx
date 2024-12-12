@@ -34,7 +34,8 @@ import {
   Pen,
   Briefcase,
   X,
-  Apple
+  Apple,
+  Book
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
@@ -43,6 +44,7 @@ export const Icons = {
   dashboard: LayoutDashboardIcon,
   logo: Command,
   login: LogIn,
+  book: Book,
   close: X,
   product: LucideShoppingBag,
   spinner: Loader2,

@@ -8,4 +8,5 @@ export type CurrentUser = {
   updatedAt: string;
   dailyActionsCompleted: number;
   dailyActionsTarget: number;
+  wakeWordReviewCount: number;
 };

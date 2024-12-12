@@ -5,9 +5,8 @@ export default async function Dashboard() {
   const session = await auth();
 
   if (!session?.user) {
-    return redirect('/');
-  } else {
-    // redirect('/dashboard/overview');
-    redirect('/dashboard/panel');
+    redirect('/');
   }
+
+  redirect('/dashboard/panel');
 }

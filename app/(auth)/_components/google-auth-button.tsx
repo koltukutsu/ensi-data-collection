@@ -12,8 +12,7 @@ export default function GoogleSignInButton() {
 
   const handleSignIn = async () => {
     try {
-      await signIn('firebase', {
-        provider: 'google',
+      await signIn('google', {
         callbackUrl: callbackUrl ?? '/dashboard'
       });
     } catch (error) {

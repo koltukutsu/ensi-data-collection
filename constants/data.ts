@@ -8,6 +8,21 @@ export type User = {
   verified: boolean;
   status: string;
 };
+
+export interface WakeDetectionSubmission {
+  channels: number;
+  filename: string;
+  sample_rate: number;
+  sample_width: number;
+  source: string;
+  storage_path: string;
+  timestamp: string;
+  wake_word: string;
+  wake_word_id: string;
+  labeled: 'allowed' | 'rejected';
+  user_id: string;
+}
+
 export const users: User[] = [
   {
     id: 1,
@@ -132,7 +147,7 @@ export type Product = {
 
 export const navItems: NavItem[] = [
   {
-    title: 'Panel',
+    title: 'Main Panel',
     url: '/dashboard/panel',
     icon: 'dashboard',
     isActive: true,
@@ -140,10 +155,18 @@ export const navItems: NavItem[] = [
     items: []
   },
   {
+    title: 'Voice Data Action',
+    url: '/dashboard/voice-data-action',
+    icon: 'book',
+    isActive: false,
+    shortcut: ['v', 'v'],
+    items: []
+  },
+  {
     title: 'Wake Word Review',
     url: '/dashboard/wake-word',
-    icon: 'dashboard',
-    isActive: true,
+    icon: 'book',
+    isActive: false,
     shortcut: ['w', 'w'],
     items: []
   }

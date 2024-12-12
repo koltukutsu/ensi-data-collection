@@ -10,8 +10,8 @@ import { auth } from '@/auth';
 import { database as ensiHomeDb } from '@/lib/firebase/ensi-home/database';
 import { where } from 'firebase/firestore';
 import { CurrentUser } from '@/types/models/user';
-import { toast } from 'sonner';
-import { createHash } from 'crypto';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Mic, FileAudio, MessageSquare, CheckCircle } from 'lucide-react';
 
 interface WakeDetection {
   document_id: string;
@@ -29,45 +29,68 @@ interface WakeDetection {
 
 export default function PanelView() {
   const router = useRouter();
-  const [dailyActionsCompleted, setDailyActionsCompleted] = useState(0);
-  const [dailyActionsTarget, setDailyActionsTarget] = useState(10);
+  const [dailyVoiceDataCollected, setDailyVoiceDataCollected] = useState(0);
+  const [dailyVoiceTarget, setDailyVoiceTarget] = useState(10);
+  const [wakeWordDetectionsCount, setWakeWordDetectionsCount] = useState(0);
+  const [wakeWordReviewCount, setWakeWordReviewCount] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [totalVoiceDataCollected, setTotalVoiceDataCollected] = useState(0);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
 
     const setupUserSubscription = async () => {
       try {
-        console.log('setupUserSubscription');
         const response = await fetch('/api/auth/session');
         const session = await response.json();
-        console.log('Setup user subscription - session: ', session);
-        const userId = createHash('sha256')
-          .update(session.user.email! + session.user.name!)
-          .digest('hex');
-        console.log('Setup user subscription - userId: ', userId);
+        const userId = session.currentUser?.id;
         if (!userId) {
-          toast.error('Session expired', {
-            description: 'Please sign in again'
-          });
-          // router.push('/');
+          console.error('No user ID found in session');
           return;
         }
 
         setUserId(userId);
 
+        // Subscribe to all users to get total voice data
+        const allUsersUnsubscribe = await database.subscribe(
+          'users',
+          (users: CurrentUser[]) => {
+            const total = users.reduce(
+              (sum, user) => sum + (user.dailyActionsCompleted || 0),
+              0
+            );
+            setTotalVoiceDataCollected(total);
+          }
+        );
+
+        // Subscribe to current user
         unsubscribe = await database.subscribe(
           'users',
           (users: CurrentUser[]) => {
             const user = users[0];
             if (user) {
-              setDailyActionsCompleted(user.dailyActionsCompleted || 0);
-              setDailyActionsTarget(user.dailyActionsTarget || 10);
+              setDailyVoiceDataCollected(user.dailyActionsCompleted || 0);
+              setDailyVoiceTarget(user.dailyActionsTarget || 10);
             }
           },
           where('id', '==', userId)
         );
+
+        // Subscribe to wake word detections
+        const wakeDetectionsUnsubscribe = await ensiHomeDb.subscribe(
+          'wake_detections',
+          (detections: WakeDetection[]) => {
+            setWakeWordDetectionsCount(detections.length);
+            const reviewedCount = detections.filter((d) => d.labeled).length;
+            setWakeWordReviewCount(reviewedCount);
+          }
+        );
+
+        return () => {
+          if (unsubscribe) unsubscribe();
+          if (wakeDetectionsUnsubscribe) wakeDetectionsUnsubscribe();
+          if (allUsersUnsubscribe) allUsersUnsubscribe();
+        };
       } catch (error) {
         console.error('Error fetching session:', error);
       }
@@ -82,77 +105,104 @@ export default function PanelView() {
     };
   }, []);
 
-  // const handleUpdateLabeled = async () => {
-  //   setIsUpdating(true);
-  //   try {
-  //     const docs = await ensiHomeDb.getAll<WakeDetection>('wake_detections');
-  //     console.log('wake detections docs: ', docs);
-  //     const updatePromises = docs.map((doc) => {
-  //       console.log('update wake detection labeled: ', doc.document_id);
-  //       return ensiHomeDb.set('wake_detections_labeled', doc.document_id, {
-  //         channels: doc.channels,
-  //         filename: doc.filename,
-  //         sample_rate: doc.sample_rate,
-  //         sample_width: doc.sample_width,
-  //         source: doc.source,
-  //         storage_path: doc.storage_path,
-  //         timestamp: doc.timestamp,
-  //         wake_word: doc.wake_word,
-  //         wake_word_id: doc.wake_word_id,
-  //         labeled: false
-  //       });
-  //     });
-  //     await Promise.all(updatePromises);
-  //     toast.success('Successfully updated all documents as unlabeled');
-  //   } catch (error) {
-  //     console.error('Error updating documents:', error);
-  //     toast.error('Failed to update documents');
-  //   } finally {
-  //     setIsUpdating(false);
-  //   }
-  // };
-
   if (!router) return null;
 
-  const remainingActions = dailyActionsTarget - dailyActionsCompleted;
-  const progressPercentage = (dailyActionsCompleted / dailyActionsTarget) * 100;
+  const remainingVoiceData = dailyVoiceTarget - dailyVoiceDataCollected;
+  const progressPercentage = (dailyVoiceDataCollected / dailyVoiceTarget) * 100;
+  const wakeWordReviewPercentage =
+    wakeWordDetectionsCount > 0
+      ? (wakeWordReviewCount / wakeWordDetectionsCount) * 100
+      : 0;
 
   return (
-    <div className="flex min-h-[80vh] w-full flex-col items-center justify-center gap-4 px-4 py-6 sm:gap-8 sm:px-6">
-      <Card className="w-full max-w-[90vw] sm:max-w-md">
-        <CardHeader className="p-4 sm:p-6">
-          <CardTitle className="text-xl sm:text-2xl">Daily Progress</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 sm:p-6">
-          <div className="space-y-4">
-            <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
-              <span className="text-xs font-medium sm:text-sm">
-                {remainingActions} actions remaining today
-              </span>
-              <span className="text-xs text-muted-foreground sm:text-sm">
-                {dailyActionsCompleted}/{dailyActionsTarget}
-              </span>
-            </div>
-            <Progress value={progressPercentage} className="h-2" />
-          </div>
-        </CardContent>
-      </Card>
-      <Button
-        size="lg"
-        className="h-16 w-full max-w-[90vw] text-xl sm:h-24 sm:w-64 sm:text-2xl"
-        onClick={() => router.push('/dashboard/action')}
+    <div className="flex min-h-[80vh] w-full flex-col items-center justify-start gap-4 px-4 py-6 sm:gap-8 sm:px-6">
+      <Tabs
+        defaultValue="voice-data"
+        className="w-full max-w-[90vw] sm:max-w-2xl"
       >
-        Start
-      </Button>
-      {/* <Button
-        variant="outline"
-        size="lg"
-        className="h-12 w-full max-w-[90vw] sm:w-64"
-        onClick={handleUpdateLabeled}
-        disabled={isUpdating}
-      >
-        {isUpdating ? 'Updating...' : 'Mark All as Unlabeled'}
-      </Button> */}
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="voice-data" className="flex items-center gap-2">
+            <FileAudio className="h-4 w-4" />
+            Voice Data
+          </TabsTrigger>
+          <TabsTrigger value="wake-words" className="flex items-center gap-2">
+            <Mic className="h-4 w-4" />
+            Wake Words
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="voice-data">
+          <Card className="w-full">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-xl sm:text-2xl">
+                Daily Voice Data Collection
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6">
+              <div className="space-y-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
+                  <span className="text-xs font-medium sm:text-sm">
+                    {remainingVoiceData} voice samples remaining today
+                  </span>
+                  <span className="text-xs text-muted-foreground sm:text-sm">
+                    {dailyVoiceDataCollected}/{dailyVoiceTarget}
+                  </span>
+                </div>
+                <Progress value={progressPercentage} className="h-2" />
+                <div className="mt-4 text-center text-sm text-muted-foreground">
+                  Together, all users have contributed {totalVoiceDataCollected}{' '}
+                  voice samples for LLM improvements! Join the effort!
+                </div>
+              </div>
+              <Button
+                size="lg"
+                className="mt-6 w-full"
+                onClick={() => router.push('/dashboard/voice-data-action')}
+              >
+                Contribute Voice Data
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="wake-words">
+          <Card className="w-full">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-xl sm:text-2xl">
+                Wake Word Detections
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6">
+              <div className="space-y-4">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">
+                      Total Detections
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {wakeWordDetectionsCount}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Reviewed</span>
+                    <span className="text-sm text-muted-foreground">
+                      {wakeWordReviewCount} / {wakeWordDetectionsCount}
+                    </span>
+                  </div>
+                  <Progress value={wakeWordReviewPercentage} className="h-2" />
+                </div>
+              </div>
+              <Button
+                size="lg"
+                className="mt-6 w-full"
+                onClick={() => router.push('/dashboard/wake-detection')}
+              >
+                Review Wake Word Detections
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

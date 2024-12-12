@@ -5,13 +5,17 @@
 import NextAuth from 'next-auth';
 import authConfig from './auth.config';
 
-const { auth } = NextAuth(authConfig);
+export const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  if (!req.auth) {
-    const url = req.url.replace(req.nextUrl.pathname, '/');
-    return Response.redirect(url);
+  const isLoggedIn = !!req.auth;
+  const isOnDashboard = req.nextUrl.pathname.startsWith('/dashboard');
+
+  if (isOnDashboard && !isLoggedIn) {
+    return Response.redirect(new URL('/', req.url));
   }
+
+  return null;
 });
 
 export const config = { matcher: ['/dashboard/:path*'] };

@@ -1,24 +1,42 @@
-import NextAuth from 'next-auth';
+import NextAuth, { DefaultSession } from 'next-auth';
 import authConfig from './auth.config';
 import { database } from '@/lib/firebase/data-collection/database';
 import { CurrentUser } from './types/models/user';
 import { createHash } from 'crypto';
 
+// Extend the built-in session type to include currentUser
+declare module 'next-auth' {
+  interface Session {
+    currentUser?: CurrentUser;
+  }
+}
+
 export const { auth, handlers, signOut, signIn } = NextAuth({
   ...authConfig,
+  callbacks: {
+    async session({ session }) {
+      const id = createHash('sha256')
+        .update(session.user?.email! + session.user?.name!)
+        .digest('hex');
+
+      const dbUser = await database.getOne<CurrentUser>('users', id);
+
+      return {
+        ...session,
+        currentUser: dbUser || null
+      };
+    }
+  },
   events: {
     async signIn({ user }) {
       try {
-        // using the user email and name, generate a unique id,
-        // use a hashing function to generate the id
         const id = createHash('sha256')
           .update(user.email! + user.name!)
           .digest('hex');
-        console.log('id given', id);
+
         const existingUser = await database.getOne('users', id);
 
         if (!existingUser) {
-          // Create new user if doesn't exist
           const newUser: CurrentUser = {
             id: id,
             admin: false,
@@ -28,13 +46,13 @@ export const { auth, handlers, signOut, signIn } = NextAuth({
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             dailyActionsCompleted: 0,
-            dailyActionsTarget: 10
+            dailyActionsTarget: 10,
+            wakeWordReviewCount: 0
           };
           await database.createWithId('users', id, newUser);
         }
       } catch (error) {
         console.error('Error handling user sign in:', error);
-        // Don't throw error to prevent blocking sign in
       }
     }
   }

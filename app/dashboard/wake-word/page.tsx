@@ -9,9 +9,12 @@ import { cloudStorage as ensiHomeStorage } from '@/lib/firebase/ensi-home/cloud-
 import { cloudStorage as dataCollectionStorage } from '@/lib/firebase/data-collection/cloud-storage';
 import { toast } from 'sonner';
 import { Slider } from '@/components/ui/slider';
-import { Spinner } from '@/components/ui/spinner';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { getStorage, ref, getBlob, getDownloadURL } from 'firebase/storage';
 import { appEnsiHome } from '@/lib/firebase/config';
+import { createHash } from 'crypto';
 
 interface WakeDetection {
   id: string;
@@ -25,6 +28,7 @@ interface WakeDetection {
   wake_word: string;
   wake_word_id: string;
   labeled?: boolean;
+  user_id?: string;
 }
 
 interface WakeDetectionSubmission {
@@ -38,6 +42,7 @@ interface WakeDetectionSubmission {
   wake_word: string;
   wake_word_id: string;
   labeled: 'allowed' | 'rejected';
+  user_id: string;
 }
 
 export default function WakeWordReviewPage() {
@@ -103,7 +108,9 @@ export default function WakeWordReviewPage() {
         );
 
         if (detections.length > 0) {
-          const detection = detections[0];
+          // Get a random index between 0 and detections.length-1
+          const randomIndex = Math.floor(Math.random() * detections.length);
+          const detection = detections[randomIndex];
           const audioUrl = await ensiHomeStorage.getUrl(
             `wake_detections/${detection.filename}`
           );
@@ -152,6 +159,10 @@ export default function WakeWordReviewPage() {
         newPath,
         new File([audioBlob], `${currentDetection.id}.wav`)
       );
+      const responseAuth = await fetch('/api/auth/session');
+      const sessionAuth = await responseAuth.json();
+      console.log('Setup user subscription - session: ', sessionAuth);
+      const userId = sessionAuth.currentUser?.id;
 
       const submission: WakeDetectionSubmission = {
         channels: currentDetection.channels,
@@ -163,12 +174,28 @@ export default function WakeWordReviewPage() {
         timestamp: currentDetection.timestamp,
         wake_word: currentDetection.wake_word,
         wake_word_id: currentDetection.wake_word_id,
-        labeled: decision
+        labeled: decision,
+        user_id: userId
       };
 
       await dataCollectionDb.create('wake_detections_labeled', submission);
       await ensiHomeDb.update('wake_detections_labeled', currentDetection.id, {
         labeled: true
+      });
+
+      const sessionUser = sessionAuth.currentUser;
+      if (sessionUser?.wakeWordReviewCount) {
+        console.log('wakeWordReviewCount exists');
+        sessionUser.wakeWordReviewCount += 1;
+      } else {
+        console.log('wakeWordReviewCount does not exist');
+        sessionUser.wakeWordReviewCount = 1;
+      }
+
+      const newWakeWordReviewCount = sessionUser.wakeWordReviewCount;
+
+      await dataCollectionDb.update('users', userId, {
+        wakeWordReviewCount: newWakeWordReviewCount
       });
 
       toast.success('Review submitted successfully');
@@ -206,19 +233,12 @@ export default function WakeWordReviewPage() {
     }
   };
 
-  const handleSliderChange = (value: number[]) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = value[0];
-      setCurrentTime(value[0]);
-    }
-  };
-
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="mx-auto max-w-3xl">
           <CardContent className="flex h-40 items-center justify-center">
-            <Spinner className="h-8 w-8" />
+            <Loader2 className="h-8 w-8 animate-spin" />
           </CardContent>
         </Card>
       </div>
@@ -230,7 +250,9 @@ export default function WakeWordReviewPage() {
       <div className="container mx-auto px-4 py-8">
         <Card className="mx-auto max-w-3xl">
           <CardContent className="flex h-40 items-center justify-center">
-            <p className="text-muted-foreground">No wake words to review</p>
+            <Alert>
+              <AlertDescription>No wake words to review</AlertDescription>
+            </Alert>
           </CardContent>
         </Card>
       </div>
@@ -238,72 +260,85 @@ export default function WakeWordReviewPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-2 py-4 sm:px-4 sm:py-8">
       <Card className="mx-auto max-w-3xl">
-        <CardHeader>
-          <CardTitle className="text-center">
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-center text-lg sm:text-2xl">
             Review Wake Word Detection
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-8">
+        <CardContent className="space-y-4 p-4 sm:space-y-8 sm:p-6">
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 rounded-lg bg-muted p-4">
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">Remaining</p>
-              <p className="text-xl font-bold text-yellow-600">
-                {remainingCount}
-              </p>
+          <div className="flex flex-col justify-center gap-2 sm:flex-row sm:gap-4">
+            <div className="flex-1">
+              <Badge
+                variant="warning"
+                className="w-full border-2 border-yellow-400 bg-yellow-100 py-2 text-base font-bold text-yellow-800 shadow-lg hover:bg-yellow-200 sm:py-3 sm:text-lg"
+              >
+                Remaining: {remainingCount}
+              </Badge>
             </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">Allowed</p>
-              <p className="text-xl font-bold text-green-600">{allowedCount}</p>
+            <div className="flex-1">
+              <Badge
+                variant="success"
+                className="w-full border-2 border-green-400 bg-green-100 py-2 text-base font-bold text-green-800 shadow-lg hover:bg-green-200 sm:py-3 sm:text-lg"
+              >
+                Allowed: {allowedCount}
+              </Badge>
             </div>
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">Rejected</p>
-              <p className="text-xl font-bold text-red-600">{rejectedCount}</p>
+            <div className="flex-1">
+              <Badge
+                variant="destructive"
+                className="w-full border-2 border-red-400 bg-red-100 py-2 text-base font-bold text-red-800 shadow-lg hover:bg-red-200 sm:py-3 sm:text-lg"
+              >
+                Rejected: {rejectedCount}
+              </Badge>
             </div>
           </div>
 
-          {/* Audio Info */}
-          <div className="rounded-lg bg-muted p-4">
-            <p className="text-center text-sm text-muted-foreground">
+          {/* Wake Word Info */}
+          <Alert className="py-2 sm:py-3">
+            <AlertDescription className="text-center text-sm sm:text-base">
               Wake Word:{' '}
               <span className="font-semibold">
                 {currentDetection.wake_word}
               </span>
-            </p>
-          </div>
+            </AlertDescription>
+          </Alert>
 
           {/* Audio Player */}
-          <div className="space-y-6">
-            <Button
-              onClick={togglePlayback}
-              variant="outline"
-              size="lg"
-              className="w-full md:mx-auto md:w-auto md:px-8"
-            >
-              {isPlaying ? (
-                <>
-                  <Pause className="mr-2 h-5 w-5" />
-                  Pause
-                </>
-              ) : (
-                <>
-                  <Play className="mr-2 h-5 w-5" />
-                  Play
-                </>
-              )}
-            </Button>
+          <div className="space-y-3 sm:space-y-6">
+            <div className="flex justify-center">
+              <Button
+                onClick={togglePlayback}
+                variant="outline"
+                size="default"
+                className="w-full border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 shadow-sm transition-transform duration-200 hover:scale-105 hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-100 hover:to-indigo-100 sm:w-auto sm:px-8"
+              >
+                {isPlaying ? (
+                  <>
+                    <Pause className="mr-2 h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
+                    <span className="text-sm font-medium text-blue-700 sm:text-base">
+                      Pause
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="mr-2 h-4 w-4 text-blue-600 sm:h-5 sm:w-5" />
+                    <span className="text-sm font-medium text-blue-700 sm:text-base">
+                      Play
+                    </span>
+                  </>
+                )}
+              </Button>
+            </div>
 
-            <div className="space-y-2">
-              <Slider
-                value={[currentTime]}
-                max={duration}
-                step={0.1}
-                onValueChange={handleSliderChange}
-                className="w-full"
+            <div className="space-y-1 sm:space-y-2">
+              <Progress
+                value={(currentTime / duration) * 100}
+                className="h-2 sm:h-3"
               />
-              <div className="flex justify-between text-sm text-muted-foreground">
+              <div className="flex justify-between text-xs text-muted-foreground sm:text-sm">
                 <span>{Math.floor(currentTime)}s</span>
                 <span>{Math.floor(duration)}s</span>
               </div>
@@ -319,22 +354,22 @@ export default function WakeWordReviewPage() {
           </div>
 
           {/* Decision Buttons */}
-          <div className="grid grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <Button
-              variant={decision === 'allowed' ? 'default' : 'outline'}
-              size="lg"
+              variant={decision === 'allowed' ? 'success' : 'outline'}
+              size="default"
               disabled={!hasListened}
               onClick={() => setDecision('allowed')}
-              className="w-full"
+              className="w-full py-2 text-sm sm:py-3 sm:text-base"
             >
               Allow
             </Button>
             <Button
               variant={decision === 'rejected' ? 'destructive' : 'outline'}
-              size="lg"
+              size="default"
               disabled={!hasListened}
               onClick={() => setDecision('rejected')}
-              className="w-full"
+              className="w-full py-2 text-sm sm:py-3 sm:text-base"
             >
               Reject
             </Button>
@@ -342,14 +377,14 @@ export default function WakeWordReviewPage() {
 
           {/* Submit Button */}
           <Button
-            size="lg"
-            className="w-full"
+            size="default"
+            className="w-full py-2 text-sm sm:py-3 sm:text-base"
             disabled={!decision || loading}
             onClick={handleSubmit}
           >
             {loading ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin sm:h-5 sm:w-5" />
                 Processing...
               </>
             ) : (
@@ -358,9 +393,11 @@ export default function WakeWordReviewPage() {
           </Button>
 
           {!hasListened && (
-            <p className="text-center text-sm text-muted-foreground">
-              Please listen to the audio before making a decision
-            </p>
+            <Alert>
+              <AlertDescription className="text-center text-xs sm:text-base">
+                Please listen to the audio before making a decision
+              </AlertDescription>
+            </Alert>
           )}
         </CardContent>
       </Card>

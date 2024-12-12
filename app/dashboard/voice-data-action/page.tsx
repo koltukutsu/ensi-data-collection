@@ -80,9 +80,7 @@ export default function ActionPage() {
         const response = await fetch('/api/auth/session');
         const session = await response.json();
         console.log('Setup user subscription - session: ', session);
-        const userId = createHash('sha256')
-          .update(session.user.email! + session.user.name!)
-          .digest('hex');
+        const userId = session.currentUser?.id;
         if (!userId) {
           toast.error('Session expired', {
             description: 'Please sign in again'
@@ -254,9 +252,7 @@ export default function ActionPage() {
       const response = await fetch('/api/auth/session');
       const session = await response.json();
 
-      const userIdNew = createHash('sha256')
-        .update(session.user.email! + session.user.name!)
-        .digest('hex');
+      const userIdNew = session.currentUser?.id;
       console.log('KONTROL USER ID:', userIdNew);
       // Get current user session
       // const response = await fetch('/api/auth/session');
@@ -469,7 +465,7 @@ export default function ActionPage() {
                 <FormField
                   control={form.control}
                   name="response"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <div className="flex items-center justify-between">
                         <FormLabel className="text-base">
