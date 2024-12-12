@@ -11,7 +11,14 @@ import { database as ensiHomeDb } from '@/lib/firebase/ensi-home/database';
 import { where } from 'firebase/firestore';
 import { CurrentUser } from '@/types/models/user';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Mic, FileAudio, MessageSquare, CheckCircle } from 'lucide-react';
+import {
+  Mic,
+  FileAudio,
+  MessageSquare,
+  CheckCircle,
+  Volume2,
+  VolumeX
+} from 'lucide-react';
 
 interface WakeDetection {
   document_id: string;
@@ -27,12 +34,28 @@ interface WakeDetection {
   labeled?: boolean;
 }
 
+interface WakeDetectionFromDataCollection {
+  document_id: string;
+  channels: number;
+  filename: string;
+  sample_rate: number;
+  sample_width: number;
+  source: string;
+  storage_path: string;
+  timestamp: string;
+  wake_word: string;
+  wake_word_id: string;
+  labeled?: 'allowed' | 'rejected';
+}
+
 export default function PanelView() {
   const router = useRouter();
   const [dailyVoiceDataCollected, setDailyVoiceDataCollected] = useState(0);
   const [dailyVoiceTarget, setDailyVoiceTarget] = useState(10);
   const [wakeWordDetectionsCount, setWakeWordDetectionsCount] = useState(0);
   const [wakeWordReviewCount, setWakeWordReviewCount] = useState(0);
+  const [wakeWordAllowedCount, setWakeWordAllowedCount] = useState(0);
+  const [wakeWordRejectedCount, setWakeWordRejectedCount] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
   const [totalVoiceDataCollected, setTotalVoiceDataCollected] = useState(0);
 
@@ -76,19 +99,37 @@ export default function PanelView() {
           where('id', '==', userId)
         );
 
-        // Subscribe to wake word detections
+        // Subscribe to wake word detections from ensi-home for total count
         const wakeDetectionsUnsubscribe = await ensiHomeDb.subscribe(
-          'wake_detections',
+          'wake_detections_labeled',
           (detections: WakeDetection[]) => {
             setWakeWordDetectionsCount(detections.length);
-            const reviewedCount = detections.filter((d) => d.labeled).length;
+          }
+        );
+
+        // Subscribe to labeled wake word detections from data-collection
+        const labeledDetectionsUnsubscribe = await database.subscribe(
+          'wake_detections_labeled',
+          (detections: WakeDetectionFromDataCollection[]) => {
+            const reviewedCount = detections.filter(
+              (d) => d.labeled !== undefined
+            ).length;
+            const allowedCount = detections.filter(
+              (d) => d.labeled === 'allowed'
+            ).length;
+            const rejectedCount = detections.filter(
+              (d) => d.labeled === 'rejected'
+            ).length;
             setWakeWordReviewCount(reviewedCount);
+            setWakeWordAllowedCount(allowedCount);
+            setWakeWordRejectedCount(rejectedCount);
           }
         );
 
         return () => {
           if (unsubscribe) unsubscribe();
           if (wakeDetectionsUnsubscribe) wakeDetectionsUnsubscribe();
+          if (labeledDetectionsUnsubscribe) labeledDetectionsUnsubscribe();
           if (allUsersUnsubscribe) allUsersUnsubscribe();
         };
       } catch (error) {
@@ -187,6 +228,22 @@ export default function PanelView() {
                     <span className="text-sm font-medium">Reviewed</span>
                     <span className="text-sm text-muted-foreground">
                       {wakeWordReviewCount} / {wakeWordDetectionsCount}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-sm font-medium text-green-600">
+                      <CheckCircle className="h-4 w-4" /> Allowed
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {wakeWordAllowedCount}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-2 text-sm font-medium text-red-600">
+                      <VolumeX className="h-4 w-4" /> Rejected
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {wakeWordRejectedCount}
                     </span>
                   </div>
                   <Progress value={wakeWordReviewPercentage} className="h-2" />

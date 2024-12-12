@@ -164,7 +164,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'Wake Word Review',
-    url: '/dashboard/wake-word',
+    url: '/dashboard/wake-detection',
     icon: 'book',
     isActive: false,
     shortcut: ['w', 'w'],
