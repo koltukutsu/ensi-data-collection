@@ -7,7 +7,7 @@ import authConfig from './auth.config';
 
 export const { auth } = NextAuth(authConfig);
 
-export default auth((req: any) => {
+export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const isOnDashboard = req.nextUrl.pathname.startsWith('/dashboard');
 
@@ -15,7 +15,7 @@ export default auth((req: any) => {
     return Response.redirect(new URL('/', req.url));
   }
 
-  return null;
-});
+  return Response.redirect(new URL(req.nextUrl.pathname, req.url));
+}) as any;
 
 export const config = { matcher: ['/dashboard/:path*'] };
