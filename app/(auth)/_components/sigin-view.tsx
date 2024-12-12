@@ -29,19 +29,14 @@ export default function SignInViewPage() {
           className="object-cover"
           priority
         />
-        <div className="relative z-20 flex w-fit items-center rounded-lg bg-black/50 p-4 text-lg font-medium">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mr-2 h-6 w-6"
-          >
-            <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-          </svg>
+        <div className="relative z-20 flex w-fit items-center rounded-lg bg-black/50 p-6 text-xl font-medium">
+          <Image
+            src="/logo.png"
+            alt="Ensi Logo"
+            width={64}
+            height={64}
+            className="mr-3 rounded-full"
+          />
           Ensi Data Collection
         </div>
         <div className="relative z-20 mt-auto">

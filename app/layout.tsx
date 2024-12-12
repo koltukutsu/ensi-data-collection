@@ -7,8 +7,17 @@ import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Ensi Data Collection Dashboard',
-  description: 'Ensi Data Collection Dashboard'
+  title: 'Your App Name',
+  description: 'Your app description',
+  icons: {
+    icon: '/favicon/favicon.ico',
+    shortcut: '/favicon/favicon.ico',
+    apple: '/favicon/apple-icon.png',
+    other: {
+      rel: 'apple-touch-icon-precomposed',
+      url: '/favicon/apple-icon-precomposed.png'
+    }
+  }
 };
 
 const lato = Lato({

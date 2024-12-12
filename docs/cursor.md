@@ -68,3 +68,8 @@ Shared Components: components/ for feature-specific components
 Dynamic Routes: [productId] for parameter-based routing
 API Routes: api/ directory for backend endpoints
 Feature-based Organization: Each major feature has its own directory
+
+## rules
+
+always use &apos; for apostrophe
+and use &quot; for quotation marks

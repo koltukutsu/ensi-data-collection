@@ -44,6 +44,7 @@ import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import { appDataCollection } from '@/lib/firebase/config';
 import { Label } from '@/components/ui/label';
 import { PlayIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface CombinedTask extends Task {
   type: 'voice';
@@ -59,6 +60,7 @@ interface PendingChange {
 }
 
 export default function PreviousActionsPage() {
+  const router = useRouter();
   const [voiceTasks, setVoiceTasks] = React.useState<CombinedTask[]>([]);
   const [wakeWordTasks, setWakeWordTasks] = React.useState<CombinedWakeWord[]>(
     []
@@ -104,6 +106,7 @@ export default function PreviousActionsPage() {
           '==',
           userId
         );
+        console.log('voiceTasksData: ', voiceTasksData);
         const combinedVoiceTasks = voiceTasksData.map((task) => ({
           ...task,
           type: 'voice' as const
@@ -333,7 +336,7 @@ export default function PreviousActionsPage() {
             </div>
 
             <CardDescription className="text-xs sm:text-sm">
-              Created: {new Date(task.created_at).toLocaleDateString()}
+              Created: {new Date(task.timestamp).toLocaleDateString()}
             </CardDescription>
           </div>
         </CardHeader>
@@ -348,9 +351,7 @@ export default function PreviousActionsPage() {
               </div>
               <div className="space-y-1">
                 <Label className="text-xs font-medium">Language</Label>
-                <p className="text-muted-foreground">
-                  {task.language || 'N/A'}
-                </p>
+                <p className="text-muted-foreground">TR</p>
               </div>
             </div>
 
@@ -450,8 +451,10 @@ export default function PreviousActionsPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Confirm Label Change</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to change this wake word review from "
-                    {task.labeled}" to "{pendingChange?.newLabel}"?
+                    Are you sure you want to change this wake word review from
+                    &quot;
+                    {task.labeled}&quot; to &quot;{pendingChange?.newLabel}
+                    &quot;?
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -486,15 +489,25 @@ export default function PreviousActionsPage() {
   if (!voiceTasks.length && !wakeWordTasks.length) {
     return (
       <Card className="mx-auto mt-4 w-full max-w-[90vw] sm:max-w-3xl">
-        <CardContent className="p-6">
+        <CardContent className="flex flex-col items-center gap-6 p-6">
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>No Previous Actions</AlertTitle>
             <AlertDescription>
-              You haven&apos;t completed any tasks yet. Complete some tasks to
-              see them here.
+              You haven&apos;t completed any tasks yet. Start contributing by
+              completing some tasks!
             </AlertDescription>
           </Alert>
+          <div className="flex gap-4">
+            <Button onClick={() => router.push('/dashboard/voice-tasks')}>
+              <MessageSquare className="mr-2 h-4 w-4" />
+              Go to Voice Tasks
+            </Button>
+            <Button onClick={() => router.push('/dashboard/wake-word')}>
+              <Mic className="mr-2 h-4 w-4" />
+              Go to Wake Word Reviews
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
@@ -533,60 +546,92 @@ export default function PreviousActionsPage() {
         <ScrollArea className="h-[calc(100vh-16rem)]">
           <TabsContent value="voice" className="m-0">
             <CardContent className="p-6">
-              <div className="space-y-6">
-                {voiceTasks.map((task) => (
-                  <Card
-                    key={task.document_id}
-                    className="border-2 border-muted"
-                  >
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <Badge variant="secondary" className="px-2 py-1">
-                            Task #{task.leaf_id}
-                          </Badge>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Clock className="mr-1 h-4 w-4" />
-                            {new Date(task.created_at).toLocaleDateString()}
+              {voiceTasks.length === 0 ? (
+                <div className="flex flex-col items-center gap-6">
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>No Voice Tasks Completed</AlertTitle>
+                    <AlertDescription>
+                      You haven&apos;t completed any voice tasks yet.
+                    </AlertDescription>
+                  </Alert>
+                  <Button onClick={() => router.push('/dashboard/voice-tasks')}>
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Go to Voice Tasks
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {voiceTasks.map((task) => (
+                    <Card
+                      key={task.document_id}
+                      className="border-2 border-muted"
+                    >
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Badge variant="secondary" className="px-2 py-1">
+                              Task #{task.leaf_id}
+                            </Badge>
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <Clock className="mr-1 h-4 w-4" />
+                              {new Date(task.created_at).toLocaleDateString()}
+                            </div>
+                          </div>
+
+                          <Alert variant="default" className="bg-primary/5">
+                            <AlertTitle className="text-base font-semibold">
+                              Instruction
+                            </AlertTitle>
+                            <AlertDescription className="mt-2 text-sm">
+                              {task.instruction_prompt}
+                            </AlertDescription>
+                          </Alert>
+
+                          <div className="mt-2">
+                            <h4 className="mb-2 font-medium">Context Paths:</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {task.leaf_path_list.map((path, pathIndex) => (
+                                <Badge
+                                  key={pathIndex}
+                                  variant="outline"
+                                  className="bg-background/50"
+                                >
+                                  {path}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         </div>
-
-                        <Alert variant="default" className="bg-primary/5">
-                          <AlertTitle className="text-base font-semibold">
-                            Instruction
-                          </AlertTitle>
-                          <AlertDescription className="mt-2 text-sm">
-                            {task.instruction_prompt}
-                          </AlertDescription>
-                        </Alert>
-
-                        <div className="mt-2">
-                          <h4 className="mb-2 font-medium">Context Paths:</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {task.leaf_path_list.map((path, pathIndex) => (
-                              <Badge
-                                key={pathIndex}
-                                variant="outline"
-                                className="bg-background/50"
-                              >
-                                {path}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </TabsContent>
 
           <TabsContent value="wake-word" className="m-0">
             <CardContent className="p-6">
-              <div className="space-y-6">
-                {wakeWordTasks.map((task) => WakeWordTaskCard(task))}
-              </div>
+              {wakeWordTasks.length === 0 ? (
+                <div className="flex flex-col items-center gap-6">
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>No Wake Word Reviews Completed</AlertTitle>
+                    <AlertDescription>
+                      You haven&apos;t completed any wake word reviews yet.
+                    </AlertDescription>
+                  </Alert>
+                  <Button onClick={() => router.push('/dashboard/wake-word')}>
+                    <Mic className="mr-2 h-4 w-4" />
+                    Go to Wake Word Reviews
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {wakeWordTasks.map((task) => WakeWordTaskCard(task))}
+                </div>
+              )}
             </CardContent>
           </TabsContent>
         </ScrollArea>
