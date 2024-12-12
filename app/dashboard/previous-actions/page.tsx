@@ -78,7 +78,7 @@ export default function PreviousActionsPage() {
     taskId: '',
     currentTime: 0,
     duration: 0,
-    audioUrl: null
+    audioUrl: '' as string | null
   });
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
@@ -102,7 +102,7 @@ export default function PreviousActionsPage() {
         // Fetch voice tasks
         const voiceTasksData = await dataCollectionDb.query<Task>(
           'saved/responses/leaf_instruction_prompts',
-          'user_id',
+          'user_id' as keyof Task,
           '==',
           userId
         );
