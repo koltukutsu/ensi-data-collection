@@ -14,6 +14,18 @@ declare module 'sonner' {
     closeButton?: boolean;
     richColors?: boolean;
     theme?: 'light' | 'dark' | 'system';
+    className?: string;
+    toastOptions?: {
+      classNames?: {
+        toast?: string;
+        title?: string;
+        description?: string;
+        loader?: string;
+        closeButton?: string;
+        actionButton?: string;
+        cancelButton?: string;
+      };
+    };
   }
 
   export const Toaster: React.FC<ToasterProps>;
