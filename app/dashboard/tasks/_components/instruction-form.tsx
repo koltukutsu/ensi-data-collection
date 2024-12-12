@@ -17,7 +17,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Mic, Square, Send, Play, Pause } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { app } from '@/lib/firebase/config';
+// import { app } from '@/lib/firebase/config';
 import { cloudStorage } from '@/lib/firebase/data-collection/cloud-storage';
 import { database } from '@/lib/firebase/data-collection/database';
 import { Task } from '@/constants/data';
@@ -234,7 +234,7 @@ export default function InstructionForm() {
             <FormField
               control={form.control}
               name="response"
-              render={({ field }) => (
+              render={({ field }: { field: any }) => (
                 <FormItem>
                   <FormLabel>Your Response</FormLabel>
                   <div className="space-y-4">
