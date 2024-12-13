@@ -169,8 +169,15 @@ export const navItems: NavItem[] = [
     isActive: false,
     shortcut: ['w', 'w'],
     items: []
+  },
+  {
+    title: 'Leaderboard',
+    url: '/dashboard/leader-board',
+    icon: 'user2',
+    shortcut: ['l', 'l'],
+    isActive: false,
+    items: []
   }
-
   // {
   //   title: 'Assign Tasks',
   //   url: '/dashboard/assign-tasks',
