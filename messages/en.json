@@ -1,0 +1,149 @@
+{
+  "auth": {
+    "welcome": "Welcome Back",
+    "signInPreferred": "Sign in with your preferred account",
+    "continueWithEmail": "Continue With Email",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithGithub": "Continue with Github",
+    "continueWithApple": "Continue with Apple",
+    "orContinueWith": "Or continue with",
+    "login": "Login",
+    "termsText": "By clicking continue, you agree to our",
+    "termsLink": "Terms of Service",
+    "and": "and",
+    "privacyLink": "Privacy Policy",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email...",
+    "signInFailed": "Failed to sign in with {provider}",
+    "tryAgain": "Please try again"
+  },
+  "dashboard": {
+    "panel": {
+      "title": "Main Panel",
+      "description": "Overview of your activities",
+      "voiceData": {
+        "title": "Daily Voice Data Collection",
+        "remaining": "{count} voice samples remaining today",
+        "contribution": "Together, all users have contributed {count} voice samples for LLM improvements! Join the effort!",
+        "contribute": "Contribute Voice Data"
+      },
+      "wakeWords": {
+        "title": "Wake Word Detections",
+        "stats": {
+          "total": "Total Detections",
+          "reviewed": "Reviewed",
+          "allowed": "Allowed",
+          "rejected": "Rejected",
+          "remaining": "Remaining"
+        },
+        "review": "Review Wake Word Detections"
+      }
+    },
+    "kanban": {
+      "title": "Kanban",
+      "description": "Manage tasks by dnd",
+      "addNewSection": "Add New Section",
+      "whatSection": "What section you want to add today?",
+      "sectionTitle": "Section title...",
+      "addNewTodo": "Add New Todo",
+      "whatTodo": "What do you want to get done today?",
+      "todoTitle": "Todo title...",
+      "description": "Description...",
+      "moveTask": "Move task",
+      "task": "Task"
+    },
+    "products": {
+      "title": "Products",
+      "description": "Manage products (Server side table functionalities.)",
+      "addNew": "Add New",
+      "createNew": "Create New Product",
+      "edit": "Edit Product",
+      "productName": "Product Name",
+      "enterProductName": "Enter product name",
+      "category": "Category",
+      "selectCategories": "Select categories",
+      "price": "Price",
+      "enterPrice": "Enter price",
+      "description": "Description",
+      "enterDescription": "Enter product description",
+      "addProduct": "Add Product",
+      "update": "Update",
+      "delete": "Delete",
+      "deleteConfirm": "Are you sure want to delete column?",
+      "deleteNote": "NOTE: All tasks related to this category will also be deleted.",
+      "cancel": "Cancel"
+    },
+    "leaderboard": {
+      "title": "Leaderboard",
+      "description": "Track user contributions across different tasks",
+      "voiceData": {
+        "title": "Voice Data Collection",
+        "contributors": "Voice Data Contributors",
+        "today": "Today's",
+        "total": "Total",
+        "last": "Last",
+        "never": "Never"
+      },
+      "wakeWords": {
+        "title": "Wake Word Reviews",
+        "reviewers": "Wake Word Reviewers",
+        "allowed": "Allowed",
+        "rejected": "Rejected"
+      }
+    },
+    "voiceAction": {
+      "loading": "Loading...",
+      "taskNotFound": {
+        "title": "Task Not Found",
+        "description": "The task you're looking for doesn't exist or has been removed.",
+        "back": "Back to Dashboard"
+      },
+      "recording": {
+        "start": "Start Recording",
+        "stop": "Stop Recording",
+        "play": "Play",
+        "pause": "Pause",
+        "transcribing": "Transcribing...",
+        "transcribed": "Transcribed to text",
+        "recorded": "Voice recorded",
+        "instruction": "Record your voice or type your response"
+      }
+    },
+    "wakeDetection": {
+      "title": "Review Wake Word Detection",
+      "wakeWord": "Wake Word: {word}",
+      "noWakeWords": "No wake words to review",
+      "controls": {
+        "play": "Play",
+        "pause": "Pause"
+      }
+    },
+    "profile": {
+      "title": "Create Your Profile",
+      "description": "To create your resume, we first need some basic information about you.",
+      "personalInfo": {
+        "title": "Personal Information",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Phone",
+        "country": "Country",
+        "city": "City"
+      },
+      "professionalInfo": {
+        "title": "Professional Information",
+        "jobTitle": "Job Title",
+        "employer": "Employer",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "jobCountry": "Job Country",
+        "jobCity": "Job City",
+        "addMore": "Add More"
+      }
+    }
+  },
+  "quotes": {
+    "responsibility": "With every Kokomari, there comes a great responsibility. We are entrusted with the task of collecting data that will be used to improve the lives of millions of people. We must not fail.",
+    "author": "Furkan Aga"
+  }
+}

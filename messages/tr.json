@@ -1,0 +1,149 @@
+{
+  "auth": {
+    "welcome": "Tekrar Hoşgeldiniz",
+    "signInPreferred": "Tercih ettiğiniz hesapla giriş yapın",
+    "continueWithEmail": "E-posta ile Devam Et",
+    "continueWithGoogle": "Google ile Devam Et",
+    "continueWithGithub": "Github ile Devam Et",
+    "continueWithApple": "Apple ile Devam Et",
+    "orContinueWith": "Veya şununla devam et",
+    "login": "Giriş Yap",
+    "termsText": "Devam'a tıklayarak şunları kabul etmiş olursunuz:",
+    "termsLink": "Kullanım Koşulları",
+    "and": "ve",
+    "privacyLink": "Gizlilik Politikası",
+    "emailLabel": "E-posta",
+    "emailPlaceholder": "E-posta adresinizi girin...",
+    "signInFailed": "{provider} ile giriş başarısız oldu",
+    "tryAgain": "Lütfen tekrar deneyin"
+  },
+  "dashboard": {
+    "panel": {
+      "title": "Ana Panel",
+      "description": "Aktivitelerinizin genel görünümü",
+      "voiceData": {
+        "title": "Günlük Ses Verisi Toplama",
+        "remaining": "Bugün {count} ses örneği kaldı",
+        "contribution": "Tüm kullanıcılar birlikte LLM geliştirmeleri için {count} ses örneği topladı! Siz de katılın!",
+        "contribute": "Ses Verisi Katkısında Bulun"
+      },
+      "wakeWords": {
+        "title": "Uyanma Kelimesi Algılamaları",
+        "stats": {
+          "total": "Toplam Algılama",
+          "reviewed": "İncelendi",
+          "allowed": "Kabul Edildi",
+          "rejected": "Reddedildi",
+          "remaining": "Kalan"
+        },
+        "review": "Uyanma Kelimesi Algılamalarını İncele"
+      }
+    },
+    "kanban": {
+      "title": "Kanban",
+      "description": "Görevleri sürükle-bırak ile yönet",
+      "addNewSection": "Yeni Bölüm Ekle",
+      "whatSection": "Bugün hangi bölümü eklemek istiyorsunuz?",
+      "sectionTitle": "Bölüm başlığı...",
+      "addNewTodo": "Yeni Görev Ekle",
+      "whatTodo": "Bugün ne yapmak istiyorsunuz?",
+      "todoTitle": "Görev başlığı...",
+      "description": "Açıklama...",
+      "moveTask": "Görevi taşı",
+      "task": "Görev"
+    },
+    "products": {
+      "title": "Ürünler",
+      "description": "Ürünleri yönetin (Sunucu taraflı tablo işlevleri)",
+      "addNew": "Yeni Ekle",
+      "createNew": "Yeni Ürün Oluştur",
+      "edit": "Ürünü Düzenle",
+      "productName": "Ürün Adı",
+      "enterProductName": "Ürün adını girin",
+      "category": "Kategori",
+      "selectCategories": "Kategorileri seçin",
+      "price": "Fiyat",
+      "enterPrice": "Fiyat girin",
+      "description": "Açıklama",
+      "enterDescription": "Ürün açıklaması girin",
+      "addProduct": "Ürün Ekle",
+      "update": "Güncelle",
+      "delete": "Sil",
+      "deleteConfirm": "Sütunu silmek istediğinizden emin misiniz?",
+      "deleteNote": "NOT: Bu kategoriye ait tüm görevler de silinecektir.",
+      "cancel": "İptal"
+    },
+    "leaderboard": {
+      "title": "Lider Tablosu",
+      "description": "Farklı görevlerdeki kullanıcı katkılarını takip edin",
+      "voiceData": {
+        "title": "Ses Verisi Toplama",
+        "contributors": "Ses Verisi Katkıda Bulunanlar",
+        "today": "Bugün",
+        "total": "Toplam",
+        "last": "Son",
+        "never": "Hiç"
+      },
+      "wakeWords": {
+        "title": "Uyanma Kelimesi İncelemeleri",
+        "reviewers": "Uyanma Kelimesi İnceleyicileri",
+        "allowed": "Kabul Edildi",
+        "rejected": "Reddedildi"
+      }
+    },
+    "voiceAction": {
+      "loading": "Yükleniyor...",
+      "taskNotFound": {
+        "title": "Görev Bulunamadı",
+        "description": "Aradığınız görev mevcut değil veya kaldırılmış.",
+        "back": "Panele Dön"
+      },
+      "recording": {
+        "start": "Kayda Başla",
+        "stop": "Kaydı Durdur",
+        "play": "Oynat",
+        "pause": "Duraklat",
+        "transcribing": "Yazıya Dönüştürülüyor...",
+        "transcribed": "Metne dönüştürüldü",
+        "recorded": "Ses kaydedildi",
+        "instruction": "Sesinizi kaydedin veya yanıtınızı yazın"
+      }
+    },
+    "wakeDetection": {
+      "title": "Uyanma Kelimesi Algılamasını İncele",
+      "wakeWord": "Uyanma Kelimesi: {word}",
+      "noWakeWords": "İncelenecek uyanma kelimesi yok",
+      "controls": {
+        "play": "Oynat",
+        "pause": "Duraklat"
+      }
+    },
+    "profile": {
+      "title": "Profilinizi Oluşturun",
+      "description": "Özgeçmişinizi oluşturmak için önce bazı temel bilgilerinize ihtiyacımız var.",
+      "personalInfo": {
+        "title": "Kişisel Bilgiler",
+        "firstName": "Ad",
+        "lastName": "Soyad",
+        "email": "E-posta",
+        "phone": "Telefon",
+        "country": "Ülke",
+        "city": "Şehir"
+      },
+      "professionalInfo": {
+        "title": "Profesyonel Bilgiler",
+        "jobTitle": "İş Unvanı",
+        "employer": "İşveren",
+        "startDate": "Başlangıç Tarihi",
+        "endDate": "Bitiş Tarihi",
+        "jobCountry": "İş Ülkesi",
+        "jobCity": "İş Şehri",
+        "addMore": "Daha Ekle"
+      }
+    }
+  },
+  "quotes": {
+    "responsibility": "Her Kokomari ile birlikte büyük bir sorumluluk gelir. Milyonlarca insanın hayatını iyileştirmek için kullanılacak verileri toplamakla görevlendirildik. Başarısız olmamalıyız.",
+    "author": "Furkan Ağa"
+  }
+}
